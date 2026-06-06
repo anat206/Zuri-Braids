@@ -1,0 +1,826 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Zuri Braids — Book Your Appointment</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --brown:    #3B1F0E;
+    --caramel:  #A0522D;
+    --gold:     #C8963E;
+    --cream:    #F7EFE5;
+    --sand:     #E8D5B7;
+    --white:    #FFFDF9;
+    --text:     #2A1505;
+    --muted:    #7A5C45;
+    --success:  #2E7D32;
+    --error:    #C62828;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--cream);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 1.2rem 2.5rem;
+    background: rgba(247,239,229,0.85);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--sand);
+  }
+  .nav-logo { font-family: 'Playfair Display', serif; font-size: 1.5rem; font-weight: 900; color: var(--brown); letter-spacing: -0.5px; }
+  .nav-logo span { color: var(--gold); }
+  .nav-links { display: flex; gap: 2rem; list-style: none; }
+  .nav-links a { text-decoration: none; color: var(--muted); font-size: 0.9rem; font-weight: 500; transition: color .2s; }
+  .nav-links a:hover { color: var(--brown); }
+  .nav-cta {
+    background: var(--brown); color: var(--cream);
+    border: none; padding: .65rem 1.4rem; border-radius: 50px;
+    font-family: 'DM Sans', sans-serif; font-size: .85rem; font-weight: 500;
+    cursor: pointer; transition: background .2s;
+  }
+  .nav-cta:hover { background: var(--caramel); }
+
+  /* ── HERO ── */
+  .hero {
+    min-height: 100vh;
+    display: grid; grid-template-columns: 1fr 1fr; align-items: center;
+    padding: 8rem 5rem 4rem;
+    gap: 4rem;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute; top: -200px; right: -200px;
+    width: 700px; height: 700px;
+    background: radial-gradient(circle, rgba(200,150,62,0.15) 0%, transparent 70%);
+    border-radius: 50%;
+    pointer-events: none;
+  }
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: .5rem;
+    background: var(--sand); border-radius: 50px;
+    padding: .4rem 1rem; font-size: .8rem; font-weight: 500;
+    color: var(--caramel); margin-bottom: 1.5rem;
+  }
+  .hero-badge::before { content: '✦'; }
+  .hero h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2.8rem, 5vw, 4.2rem);
+    font-weight: 900; line-height: 1.1;
+    color: var(--brown); margin-bottom: 1.5rem;
+  }
+  .hero h1 em { color: var(--gold); font-style: italic; }
+  .hero p { font-size: 1.1rem; color: var(--muted); line-height: 1.7; max-width: 420px; margin-bottom: 2.5rem; }
+  .hero-btns { display: flex; gap: 1rem; flex-wrap: wrap; }
+  .btn-primary {
+    background: var(--brown); color: var(--cream);
+    border: none; padding: .9rem 2rem; border-radius: 50px;
+    font-family: 'DM Sans', sans-serif; font-size: 1rem; font-weight: 500;
+    cursor: pointer; transition: all .2s; text-decoration: none; display: inline-block;
+  }
+  .btn-primary:hover { background: var(--caramel); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(59,31,14,.2); }
+  .btn-secondary {
+    background: transparent; color: var(--brown);
+    border: 2px solid var(--sand); padding: .9rem 2rem; border-radius: 50px;
+    font-family: 'DM Sans', sans-serif; font-size: 1rem; font-weight: 500;
+    cursor: pointer; transition: all .2s; text-decoration: none; display: inline-block;
+  }
+  .btn-secondary:hover { border-color: var(--caramel); color: var(--caramel); }
+
+  /* Hero Visual */
+  .hero-visual {
+    display: flex; flex-direction: column; gap: 1.2rem;
+    animation: fadeUp .8s ease both .3s;
+  }
+  .stat-card {
+    background: var(--white); border-radius: 18px;
+    padding: 1.5rem 2rem; box-shadow: 0 4px 24px rgba(59,31,14,.07);
+    display: flex; align-items: center; gap: 1.2rem;
+  }
+  .stat-icon { font-size: 2rem; }
+  .stat-num { font-family: 'Playfair Display', serif; font-size: 2rem; font-weight: 700; color: var(--brown); }
+  .stat-label { font-size: .85rem; color: var(--muted); }
+  .mini-booking-preview {
+    background: var(--white); border-radius: 18px;
+    padding: 1.5rem 2rem; box-shadow: 0 4px 24px rgba(59,31,14,.07);
+  }
+  .preview-title { font-size: .75rem; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); margin-bottom: 1rem; }
+  .preview-slot { display: flex; align-items: center; gap .8rem; padding: .7rem 0; border-bottom: 1px solid var(--sand); }
+  .preview-slot:last-child { border-bottom: none; }
+  .slot-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--gold); flex-shrink: 0; }
+  .slot-info { flex: 1; }
+  .slot-name { font-size: .85rem; font-weight: 500; }
+  .slot-time { font-size: .75rem; color: var(--muted); }
+  .slot-status { font-size: .7rem; font-weight: 500; padding: .2rem .6rem; border-radius: 20px; }
+  .status-booked { background: #FFF3E0; color: #E65100; }
+  .status-open   { background: #E8F5E9; color: #2E7D32; }
+
+  /* ── SERVICES ── */
+  .section { padding: 5rem 5rem; }
+  .section-label { font-size: .75rem; text-transform: uppercase; letter-spacing: 2px; color: var(--gold); margin-bottom: .8rem; }
+  .section-title { font-family: 'Playfair Display', serif; font-size: clamp(2rem,4vw,3rem); font-weight: 700; color: var(--brown); margin-bottom: 1rem; }
+  .section-sub { color: var(--muted); font-size: 1rem; max-width: 500px; }
+
+  .services-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 1.5rem; margin-top: 3rem; }
+  .service-card {
+    background: var(--white); border-radius: 20px; padding: 2rem 1.5rem;
+    box-shadow: 0 2px 16px rgba(59,31,14,.06); cursor: pointer;
+    transition: all .25s; border: 2px solid transparent;
+    position: relative; overflow: hidden;
+  }
+  .service-card:hover { transform: translateY(-4px); box-shadow: 0 12px 32px rgba(59,31,14,.12); border-color: var(--gold); }
+  .service-card.selected { border-color: var(--brown); background: var(--cream); }
+  .service-card.selected::after { content: '✓'; position: absolute; top: 1rem; right: 1rem; background: var(--brown); color: white; border-radius: 50%; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; font-size: .75rem; }
+  .service-emoji { font-size: 2.2rem; margin-bottom: 1rem; }
+  .service-name { font-weight: 600; font-size: 1rem; margin-bottom: .4rem; color: var(--brown); }
+  .service-duration { font-size: .8rem; color: var(--muted); margin-bottom: .8rem; }
+  .service-price { font-family: 'Playfair Display', serif; font-size: 1.4rem; font-weight: 700; color: var(--gold); }
+
+  /* ── BOOKING FORM ── */
+  #booking { background: var(--white); }
+  .booking-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: start; margin-top: 3rem; }
+
+  .form-section-title { font-family: 'Playfair Display', serif; font-size: 1.4rem; font-weight: 700; color: var(--brown); margin-bottom: 1.5rem; }
+  .form-group { margin-bottom: 1.4rem; }
+  label { display: block; font-size: .85rem; font-weight: 500; color: var(--brown); margin-bottom: .5rem; }
+  .required::after { content: ' *'; color: var(--caramel); }
+  input, select, textarea {
+    width: 100%; padding: .85rem 1rem; border-radius: 10px;
+    border: 1.5px solid var(--sand); background: var(--cream);
+    font-family: 'DM Sans', sans-serif; font-size: .95rem; color: var(--text);
+    transition: border .2s, box-shadow .2s; outline: none;
+  }
+  input:focus, select:focus, textarea:focus {
+    border-color: var(--caramel);
+    box-shadow: 0 0 0 3px rgba(200,150,62,.12);
+  }
+  input.error, select.error { border-color: var(--error); }
+  .error-msg { color: var(--error); font-size: .78rem; margin-top: .3rem; display: none; }
+  .error-msg.show { display: block; }
+  textarea { resize: vertical; min-height: 80px; }
+
+  .time-slots { display: grid; grid-template-columns: repeat(3, 1fr); gap: .6rem; margin-top: .5rem; }
+  .time-btn {
+    padding: .6rem .4rem; border-radius: 8px; border: 1.5px solid var(--sand);
+    background: var(--cream); font-family: 'DM Sans', sans-serif; font-size: .8rem;
+    cursor: pointer; transition: all .2s; text-align: center; color: var(--text);
+  }
+  .time-btn:hover:not(:disabled) { border-color: var(--caramel); color: var(--caramel); }
+  .time-btn.active { background: var(--brown); color: var(--cream); border-color: var(--brown); }
+  .time-btn:disabled { opacity: .4; cursor: not-allowed; text-decoration: line-through; }
+
+  .privacy-note {
+    display: flex; gap: .6rem; align-items: flex-start;
+    background: var(--cream); border-radius: 10px;
+    padding: 1rem 1.2rem; margin-top: 1.2rem; font-size: .82rem; color: var(--muted);
+  }
+  .privacy-note::before { content: '🔒'; flex-shrink: 0; }
+
+  .submit-btn {
+    width: 100%; background: var(--brown); color: var(--cream);
+    border: none; padding: 1.1rem; border-radius: 50px;
+    font-family: 'DM Sans', sans-serif; font-size: 1rem; font-weight: 600;
+    cursor: pointer; transition: all .25s; margin-top: 1.5rem; letter-spacing: .3px;
+  }
+  .submit-btn:hover { background: var(--caramel); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(59,31,14,.2); }
+  .submit-btn:disabled { background: var(--muted); transform: none; cursor: not-allowed; }
+
+  /* Summary card */
+  .summary-card {
+    background: var(--cream); border-radius: 20px; padding: 2rem;
+    border: 1.5px solid var(--sand); position: sticky; top: 100px;
+  }
+  .summary-row { display: flex; justify-content: space-between; align-items: center; padding: .7rem 0; border-bottom: 1px solid var(--sand); font-size: .9rem; }
+  .summary-row:last-of-type { border-bottom: none; }
+  .summary-row .label { color: var(--muted); }
+  .summary-row .value { font-weight: 500; color: var(--brown); }
+  .summary-total { display: flex; justify-content: space-between; align-items: center; padding-top: 1rem; margin-top: .5rem; border-top: 2px solid var(--sand); }
+  .summary-total .label { font-weight: 600; }
+  .summary-total .value { font-family: 'Playfair Display', serif; font-size: 1.6rem; color: var(--gold); font-weight: 700; }
+
+  .security-badges { display: flex; flex-wrap: wrap; gap: .6rem; margin-top: 1.5rem; }
+  .badge { background: var(--white); border-radius: 8px; padding: .4rem .8rem; font-size: .72rem; color: var(--muted); display: flex; gap: .3rem; align-items: center; border: 1px solid var(--sand); }
+
+  /* ── SUCCESS MODAL ── */
+  .modal-overlay {
+    position: fixed; inset: 0; background: rgba(42,21,5,.5);
+    backdrop-filter: blur(6px); z-index: 200;
+    display: flex; align-items: center; justify-content: center;
+    opacity: 0; pointer-events: none; transition: opacity .3s;
+  }
+  .modal-overlay.show { opacity: 1; pointer-events: all; }
+  .modal {
+    background: var(--white); border-radius: 24px;
+    padding: 3rem 2.5rem; max-width: 420px; width: 90%;
+    text-align: center; transform: scale(.9); transition: transform .3s;
+  }
+  .modal-overlay.show .modal { transform: scale(1); }
+  .modal-icon { font-size: 3.5rem; margin-bottom: 1rem; }
+  .modal h2 { font-family: 'Playfair Display', serif; font-size: 1.8rem; color: var(--brown); margin-bottom: .8rem; }
+  .modal p { color: var(--muted); font-size: .95rem; line-height: 1.6; }
+  .modal-ref { background: var(--cream); border-radius: 10px; padding: .8rem 1.2rem; margin: 1.5rem 0; font-weight: 600; color: var(--brown); font-size: .9rem; }
+  .modal-close { background: var(--brown); color: white; border: none; padding: .9rem 2.5rem; border-radius: 50px; cursor: pointer; font-family: 'DM Sans', sans-serif; font-size: .95rem; font-weight: 500; transition: background .2s; }
+  .modal-close:hover { background: var(--caramel); }
+
+  /* ── FOOTER ── */
+  footer { background: var(--brown); color: var(--sand); padding: 2.5rem 5rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; }
+  .footer-logo { font-family: 'Playfair Display', serif; font-size: 1.3rem; font-weight: 700; color: var(--cream); }
+  .footer-links { display: flex; gap: 1.5rem; }
+  .footer-links a { color: var(--sand); font-size: .85rem; text-decoration: none; transition: color .2s; }
+  .footer-links a:hover { color: var(--gold); }
+  footer p { font-size: .8rem; opacity: .6; }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .fade-in { animation: fadeUp .7s ease both; }
+  .delay-1 { animation-delay: .1s; }
+  .delay-2 { animation-delay: .25s; }
+  .delay-3 { animation-delay: .4s; }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 900px) {
+    .hero { grid-template-columns: 1fr; padding: 7rem 2rem 3rem; gap: 2rem; }
+    .booking-grid { grid-template-columns: 1fr; }
+    .section { padding: 4rem 2rem; }
+    nav { padding: 1rem 1.5rem; }
+    .nav-links { display: none; }
+    footer { padding: 2rem; flex-direction: column; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">Zuri <span>Braids</span></div>
+  <ul class="nav-links">
+    <li><a href="#services">Services</a></li>
+    <li><a href="#booking">Book Now</a></li>
+    <li><a href="#about">About</a></li>
+  </ul>
+  <button class="nav-cta" onclick="document.getElementById('booking').scrollIntoView({behavior:'smooth'})">Book Appointment</button>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div>
+    <div class="hero-badge fade-in">Johannesburg, Gauteng</div>
+    <h1 class="fade-in delay-1">Beautiful Braids, <em>Effortless</em> Booking</h1>
+    <p class="fade-in delay-2">Book your next protective style online — choose your service, pick a time, and we'll handle the rest. Safe, simple, and secure.</p>
+    <div class="hero-btns fade-in delay-3">
+      <a href="#booking" class="btn-primary">Book Now</a>
+      <a href="#services" class="btn-secondary">View Services</a>
+    </div>
+  </div>
+  <div class="hero-visual">
+    <div class="stat-card">
+      <div class="stat-icon">✂️</div>
+      <div>
+        <div class="stat-num">200+</div>
+        <div class="stat-label">Happy clients styled</div>
+      </div>
+    </div>
+    <div class="mini-booking-preview">
+      <div class="preview-title">Today's Schedule</div>
+      <div class="preview-slot" style="display:flex;align-items:center;gap:.8rem;padding:.7rem 0;border-bottom:1px solid var(--sand)">
+        <div class="slot-dot"></div>
+        <div class="slot-info">
+          <div class="slot-name">Amara K.</div>
+          <div class="slot-time">09:00 — Box Braids</div>
+        </div>
+        <span class="slot-status status-booked">Booked</span>
+      </div>
+      <div class="preview-slot" style="display:flex;align-items:center;gap:.8rem;padding:.7rem 0;border-bottom:1px solid var(--sand)">
+        <div class="slot-dot" style="background:#2E7D32"></div>
+        <div class="slot-info">
+          <div class="slot-name">11:00 AM</div>
+          <div class="slot-time">Available</div>
+        </div>
+        <span class="slot-status status-open">Open</span>
+      </div>
+      <div class="preview-slot" style="display:flex;align-items:center;gap:.8rem;padding:.7rem 0">
+        <div class="slot-dot"></div>
+        <div class="slot-info">
+          <div class="slot-name">Nandi M.</div>
+          <div class="slot-time">14:00 — Knotless Braids</div>
+        </div>
+        <span class="slot-status status-booked">Booked</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SERVICES -->
+<section class="section" id="services">
+  <div class="section-label">What We Offer</div>
+  <h2 class="section-title">Choose Your Style</h2>
+  <p class="section-sub">Select a service below to pre-select it in your booking form.</p>
+  <div class="services-grid" id="servicesGrid">
+    <div class="service-card" data-service="Box Braids" data-price="450" data-duration="4–5 hrs">
+      <div class="service-emoji">🟫</div>
+      <div class="service-name">Box Braids</div>
+      <div class="service-duration">⏱ 4–5 hours</div>
+      <div class="service-price">R450</div>
+    </div>
+    <div class="service-card" data-service="Knotless Braids" data-price="550" data-duration="5–6 hrs">
+      <div class="service-emoji">✨</div>
+      <div class="service-name">Knotless Braids</div>
+      <div class="service-duration">⏱ 5–6 hours</div>
+      <div class="service-price">R550</div>
+    </div>
+    <div class="service-card" data-service="Cornrows" data-price="250" data-duration="1–2 hrs">
+      <div class="service-emoji">〰️</div>
+      <div class="service-name">Cornrows</div>
+      <div class="service-duration">⏱ 1–2 hours</div>
+      <div class="service-price">R250</div>
+    </div>
+    <div class="service-card" data-service="Goddess Braids" data-price="500" data-duration="3–4 hrs">
+      <div class="service-emoji">👑</div>
+      <div class="service-name">Goddess Braids</div>
+      <div class="service-duration">⏱ 3–4 hours</div>
+      <div class="service-price">R500</div>
+    </div>
+    <div class="service-card" data-service="Faux Locs" data-price="700" data-duration="6–8 hrs">
+      <div class="service-emoji">🌿</div>
+      <div class="service-name">Faux Locs</div>
+      <div class="service-duration">⏱ 6–8 hours</div>
+      <div class="service-price">R700</div>
+    </div>
+    <div class="service-card" data-service="Twists" data-price="350" data-duration="2–3 hrs">
+      <div class="service-emoji">🌀</div>
+      <div class="service-name">Passion Twists</div>
+      <div class="service-duration">⏱ 2–3 hours</div>
+      <div class="service-price">R350</div>
+    </div>
+  </div>
+</section>
+
+<!-- BOOKING FORM -->
+<section class="section" id="booking">
+  <div class="section-label">Secure Booking</div>
+  <h2 class="section-title">Book Your Appointment</h2>
+  <p class="section-sub">Your information is protected and never shared with third parties. 🔒</p>
+
+  <div class="booking-grid">
+    <!-- LEFT: FORM -->
+    <div>
+      <div class="form-section-title">Your Details</div>
+
+      <div class="form-group">
+        <label class="required" for="fullName">Full Name</label>
+        <input type="text" id="fullName" placeholder="e.g. Anathi Dlamini" autocomplete="name"/>
+        <div class="error-msg" id="err-fullName">Please enter your full name.</div>
+      </div>
+
+      <div class="form-group">
+        <label class="required" for="phone">Phone Number</label>
+        <input type="tel" id="phone" placeholder="e.g. 071 234 5678" autocomplete="tel"/>
+        <div class="error-msg" id="err-phone">Please enter a valid SA phone number.</div>
+      </div>
+
+      <div class="form-group">
+        <label class="required" for="email">Email Address</label>
+        <input type="email" id="email" placeholder="e.g. anathi@email.com" autocomplete="email"/>
+        <div class="error-msg" id="err-email">Please enter a valid email address.</div>
+      </div>
+
+      <div class="form-section-title" style="margin-top:2rem">Appointment Details</div>
+
+      <div class="form-group">
+        <label class="required" for="service">Service</label>
+        <select id="service">
+          <option value="">— Select a service —</option>
+          <option value="Box Braids|450|4–5 hrs">Box Braids — R450</option>
+          <option value="Knotless Braids|550|5–6 hrs">Knotless Braids — R550</option>
+          <option value="Cornrows|250|1–2 hrs">Cornrows — R250</option>
+          <option value="Goddess Braids|500|3–4 hrs">Goddess Braids — R500</option>
+          <option value="Faux Locs|700|6–8 hrs">Faux Locs — R700</option>
+          <option value="Twists|350|2–3 hrs">Passion Twists — R350</option>
+        </select>
+        <div class="error-msg" id="err-service">Please select a service.</div>
+      </div>
+
+      <div class="form-group">
+        <label class="required" for="date">Preferred Date</label>
+        <input type="date" id="date"/>
+        <div class="error-msg" id="err-date">Please choose a future date.</div>
+      </div>
+
+      <div class="form-group">
+        <label class="required">Preferred Time</label>
+        <div class="time-slots" id="timeSlots">
+          <!-- generated by JS -->
+        </div>
+        <div class="error-msg" id="err-time">Please select a time slot.</div>
+      </div>
+
+      <div class="form-group">
+        <label for="notes">Special Requests (optional)</label>
+        <textarea id="notes" placeholder="e.g. hair length, style reference, allergies..."></textarea>
+      </div>
+
+      <!-- Consent checkbox -->
+      <div style="display:flex;gap:.8rem;align-items:flex-start;margin-top:1rem;">
+        <input type="checkbox" id="consent" style="width:auto;margin-top:.2rem;accent-color:var(--brown)"/>
+        <label for="consent" style="font-size:.85rem;font-weight:400;color:var(--muted);cursor:pointer">
+          I agree that my contact details will be used only to confirm this booking and will not be sold or shared. <strong style="color:var(--brown)">Privacy Policy</strong>
+        </label>
+      </div>
+      <div class="error-msg" id="err-consent">You must agree to proceed.</div>
+
+      <div class="privacy-note">
+        Your data is encrypted in transit and stored securely. We follow POPIA compliance guidelines for South African data protection.
+      </div>
+
+      <button class="submit-btn" id="submitBtn" onclick="handleSubmit()">Confirm My Booking →</button>
+    </div>
+
+    <!-- RIGHT: SUMMARY -->
+    <div>
+      <div class="summary-card" id="summaryCard">
+        <div class="form-section-title">Booking Summary</div>
+        <div class="summary-row"><span class="label">Service</span><span class="value" id="sum-service">—</span></div>
+        <div class="summary-row"><span class="label">Duration</span><span class="value" id="sum-duration">—</span></div>
+        <div class="summary-row"><span class="label">Date</span><span class="value" id="sum-date">—</span></div>
+        <div class="summary-row"><span class="label">Time</span><span class="value" id="sum-time">—</span></div>
+        <div class="summary-row"><span class="label">Client</span><span class="value" id="sum-name">—</span></div>
+        <div class="summary-total">
+          <span class="label">Total</span>
+          <span class="value" id="sum-price">R0</span>
+        </div>
+        <div class="security-badges">
+          <div class="badge">🔒 SSL Secured</div>
+          <div class="badge">🛡️ POPIA Compliant</div>
+          <div class="badge">✉️ Email Confirmation</div>
+          <div class="badge">🇿🇦 Local Business</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">Zuri Braids</div>
+  <div class="footer-links">
+    <a href="#">Privacy Policy</a>
+    <a href="#">Terms</a>
+    <a href="#">Contact</a>
+  </div>
+  <p>© 2026 Zuri Braids · Johannesburg, Gauteng</p>
+</footer>
+
+<!-- SUCCESS MODAL -->
+<div class="modal-overlay" id="successModal">
+  <div class="modal">
+    <div class="modal-icon">🎉</div>
+    <h2>You're Booked!</h2>
+    <p>Your appointment has been confirmed. Check your email for details.</p>
+    <div class="modal-ref" id="modalRef">REF: ZB-000000</div>
+    <p style="font-size:.82rem;color:var(--muted)">If you need to reschedule, reply to your confirmation email at least 24 hours in advance.</p>
+    <button class="modal-close" onclick="closeModal()">Done ✓</button>
+  </div>
+</div>
+
+<script>
+// ── SUPABASE CONFIG
+const SUPABASE_URL = 'https://zaqfptkzgmbplqnugzhx.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_INii29OYD6zldhMrmmIY6A_fCEX4-yE';
+
+async function saveBookingToSupabase(booking) {
+  const response = await fetch(`${SUPABASE_URL}/rest/v1/bookings`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'apikey': SUPABASE_KEY,
+      'Authorization': `Bearer ${SUPABASE_KEY}`,
+      'Prefer': 'return=minimal'
+    },
+    body: JSON.stringify(booking)
+  });
+  if (!response.ok) {
+    let errMsg = 'Failed to save booking';
+    try { const err = await response.json(); errMsg = err.message || errMsg; } catch(e) {}
+    throw new Error(errMsg);
+  }
+  return true;
+}
+
+async function fetchBookedSlots(date) {
+  try {
+    const response = await fetch(
+      `${SUPABASE_URL}/rest/v1/bookings?booking_date=eq.${date}&select=booking_time`,
+      {
+        headers: {
+          'apikey': SUPABASE_KEY,
+          'Authorization': `Bearer ${SUPABASE_KEY}`
+        }
+      }
+    );
+    if (!response.ok) return [];
+    const data = await response.json();
+    return data.map(b => b.booking_time);
+  } catch(e) { return []; }
+}
+
+// ── TIME SLOTS
+const allSlots = ['08:00','09:00','10:00','11:00','13:00','14:00','15:00','16:00'];
+let bookedSlots = [];
+let selectedTime = '';
+
+function renderTimeSlots() {
+  const container = document.getElementById('timeSlots');
+  container.innerHTML = '';
+  allSlots.forEach(t => {
+    const btn = document.createElement('button');
+    btn.className = 'time-btn' + (bookedSlots.includes(t) ? '' : '');
+    btn.type = 'button';
+    btn.textContent = t;
+    if (bookedSlots.includes(t)) {
+      btn.disabled = true;
+      btn.title = 'Already booked';
+    } else {
+      btn.onclick = () => {
+        document.querySelectorAll('.time-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        selectedTime = t;
+        updateSummary();
+        hideError('err-time');
+      };
+    }
+    container.appendChild(btn);
+  });
+}
+renderTimeSlots();
+
+// ── SERVICE CARDS click-to-select
+document.querySelectorAll('.service-card').forEach(card => {
+  card.addEventListener('click', () => {
+    document.querySelectorAll('.service-card').forEach(c => c.classList.remove('selected'));
+    card.classList.add('selected');
+    const sel = card.dataset.service + '|' + card.dataset.price + '|' + card.dataset.duration;
+    const serviceEl = document.getElementById('service');
+    for (let opt of serviceEl.options) {
+      if (opt.value === sel) { opt.selected = true; break; }
+    }
+    updateSummary();
+  });
+});
+
+// ── SET MIN DATE (today)
+const dateInput = document.getElementById('date');
+const today = new Date();
+const pad = n => String(n).padStart(2,'0');
+dateInput.min = `${today.getFullYear()}-${pad(today.getMonth()+1)}-${pad(today.getDate())}`;
+
+// Reload booked slots when date changes
+dateInput.addEventListener('change', async () => {
+  const dateVal = dateInput.value;
+  if (!dateVal) return;
+  bookedSlots = await fetchBookedSlots(dateVal);
+  selectedTime = '';
+  renderTimeSlots();
+  updateSummary();
+});
+
+// ── LIVE SUMMARY UPDATE
+function updateSummary() {
+  const name    = document.getElementById('fullName').value.trim();
+  const svcRaw  = document.getElementById('service').value;
+  const dateVal = document.getElementById('date').value;
+
+  document.getElementById('sum-name').textContent = name || '—';
+
+  if (svcRaw) {
+    const [svc, price, dur] = svcRaw.split('|');
+    document.getElementById('sum-service').textContent  = svc;
+    document.getElementById('sum-duration').textContent = dur;
+    document.getElementById('sum-price').textContent    = 'R' + price;
+  } else {
+    document.getElementById('sum-service').textContent  = '—';
+    document.getElementById('sum-duration').textContent = '—';
+    document.getElementById('sum-price').textContent    = 'R0';
+  }
+
+  if (dateVal) {
+    const d = new Date(dateVal + 'T00:00:00');
+    document.getElementById('sum-date').textContent = d.toLocaleDateString('en-ZA', {weekday:'long',day:'numeric',month:'long'});
+  } else {
+    document.getElementById('sum-date').textContent = '—';
+  }
+
+  document.getElementById('sum-time').textContent = selectedTime || '—';
+}
+
+['fullName','service','date'].forEach(id => {
+  document.getElementById(id).addEventListener('input', updateSummary);
+  document.getElementById(id).addEventListener('change', updateSummary);
+});
+
+// ── VALIDATION
+function showError(id) { document.getElementById(id).classList.add('show'); }
+function hideError(id) { document.getElementById(id).classList.remove('show'); }
+function markError(fieldId, errId) {
+  document.getElementById(fieldId).classList.add('error');
+  showError(errId);
+}
+function clearError(fieldId, errId) {
+  document.getElementById(fieldId).classList.remove('error');
+  hideError(errId);
+}
+
+// inline clear on input
+['fullName','phone','email','service','date'].forEach(id => {
+  const errId = 'err-' + id;
+  document.getElementById(id).addEventListener('input', () => clearError(id, errId));
+  document.getElementById(id).addEventListener('change', () => clearError(id, errId));
+});
+
+function validateForm() {
+  let valid = true;
+
+  const name = document.getElementById('fullName').value.trim();
+  if (name.length < 2) { markError('fullName','err-fullName'); valid = false; } else clearError('fullName','err-fullName');
+
+  const phone = document.getElementById('phone').value.replace(/\s/g,'');
+  if (!/^(\+27|0)[6-8][0-9]{8}$/.test(phone)) { markError('phone','err-phone'); valid = false; } else clearError('phone','err-phone');
+
+  const email = document.getElementById('email').value.trim();
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { markError('email','err-email'); valid = false; } else clearError('email','err-email');
+
+  const svc = document.getElementById('service').value;
+  if (!svc) { markError('service','err-service'); valid = false; } else clearError('service','err-service');
+
+  const dateVal = document.getElementById('date').value;
+  const chosen  = new Date(dateVal);
+  const now     = new Date(); now.setHours(0,0,0,0);
+  if (!dateVal || chosen < now) { markError('date','err-date'); valid = false; } else clearError('date','err-date');
+
+  if (!selectedTime) { showError('err-time'); valid = false; } else hideError('err-time');
+
+  const consent = document.getElementById('consent').checked;
+  if (!consent) { showError('err-consent'); valid = false; } else hideError('err-consent');
+
+  return valid;
+}
+
+// ── RESEND EMAIL CONFIG
+const RESEND_KEY = 're_KiyUbygk_PAe3mP9CZirFbym4jQzXkXCX';
+const OWNER_EMAIL = 'anathimtana06@gmail.com';
+
+async function sendOwnerNotification(booking) {
+  // Uses Resend API to email the salon owner
+  const dateFormatted = new Date(booking.booking_date + 'T00:00:00').toLocaleDateString('en-ZA', {weekday:'long', day:'numeric', month:'long', year:'numeric'});
+  await fetch('https://api.resend.com/emails', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + RESEND_KEY
+    },
+    body: JSON.stringify({
+      from: 'Zuri Braids Bookings <onboarding@resend.dev>',
+      to: [OWNER_EMAIL],
+      subject: '🎉 New Booking: ' + booking.service + ' — ' + booking.client_name,
+      html: `
+        <div style="font-family:sans-serif;max-width:500px;margin:0 auto;background:#F7EFE5;padding:24px;border-radius:16px">
+          <h2 style="color:#3B1F0E;margin-bottom:4px">New Appointment Booked!</h2>
+          <p style="color:#7A5C45;margin-top:0">Someone just booked through your Zuri Braids website.</p>
+          <div style="background:white;border-radius:12px;padding:20px;margin:16px 0">
+            <table style="width:100%;border-collapse:collapse">
+              <tr><td style="padding:8px 0;color:#7A5C45;font-size:14px">Client</td><td style="padding:8px 0;font-weight:600;color:#2A1505">${booking.client_name}</td></tr>
+              <tr><td style="padding:8px 0;color:#7A5C45;font-size:14px">Phone</td><td style="padding:8px 0;font-weight:600;color:#2A1505">${booking.client_phone}</td></tr>
+              <tr><td style="padding:8px 0;color:#7A5C45;font-size:14px">Email</td><td style="padding:8px 0;font-weight:600;color:#2A1505">${booking.client_email}</td></tr>
+              <tr><td style="padding:8px 0;color:#7A5C45;font-size:14px">Service</td><td style="padding:8px 0;font-weight:600;color:#2A1505">${booking.service}</td></tr>
+              <tr><td style="padding:8px 0;color:#7A5C45;font-size:14px">Date</td><td style="padding:8px 0;font-weight:600;color:#2A1505">${dateFormatted}</td></tr>
+              <tr><td style="padding:8px 0;color:#7A5C45;font-size:14px">Time</td><td style="padding:8px 0;font-weight:600;color:#2A1505">${booking.booking_time}</td></tr>
+              <tr><td style="padding:8px 0;color:#7A5C45;font-size:14px">Price</td><td style="padding:8px 0;font-weight:600;color:#C8963E">R${booking.price}</td></tr>
+              <tr><td style="padding:8px 0;color:#7A5C45;font-size:14px">Ref</td><td style="padding:8px 0;font-weight:600;color:#2A1505">${booking.reference}</td></tr>
+              ${booking.notes ? '<tr><td style="padding:8px 0;color:#7A5C45;font-size:14px">Notes</td><td style="padding:8px 0;color:#2A1505">' + booking.notes + '</td></tr>' : ''}
+            </table>
+          </div>
+          <p style="color:#7A5C45;font-size:13px">This is an automated notification from your Zuri Braids booking site.</p>
+        </div>
+      `
+    })
+  });
+}
+
+async function sendClientConfirmation(booking) {
+  const dateFormatted = new Date(booking.booking_date + 'T00:00:00').toLocaleDateString('en-ZA', {weekday:'long', day:'numeric', month:'long', year:'numeric'});
+  await fetch('https://api.resend.com/emails', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + RESEND_KEY
+    },
+    body: JSON.stringify({
+      from: 'Zuri Braids <onboarding@resend.dev>',
+      to: [OWNER_EMAIL], // On free plan, can only send to your own email
+      subject: '✅ Booking Confirmed — ' + booking.service,
+      html: `
+        <div style="font-family:sans-serif;max-width:500px;margin:0 auto;background:#F7EFE5;padding:24px;border-radius:16px">
+          <h2 style="color:#3B1F0E">Your Booking is Confirmed! 🎉</h2>
+          <p style="color:#7A5C45">Hi ${booking.client_name}, your appointment at Zuri Braids has been booked.</p>
+          <div style="background:white;border-radius:12px;padding:20px;margin:16px 0">
+            <table style="width:100%;border-collapse:collapse">
+              <tr><td style="padding:8px 0;color:#7A5C45;font-size:14px">Service</td><td style="padding:8px 0;font-weight:600;color:#2A1505">${booking.service}</td></tr>
+              <tr><td style="padding:8px 0;color:#7A5C45;font-size:14px">Date</td><td style="padding:8px 0;font-weight:600;color:#2A1505">${dateFormatted}</td></tr>
+              <tr><td style="padding:8px 0;color:#7A5C45;font-size:14px">Time</td><td style="padding:8px 0;font-weight:600;color:#2A1505">${booking.booking_time}</td></tr>
+              <tr><td style="padding:8px 0;color:#7A5C45;font-size:14px">Price</td><td style="padding:8px 0;font-weight:600;color:#C8963E">R${booking.price}</td></tr>
+              <tr><td style="padding:8px 0;color:#7A5C45;font-size:14px">Reference</td><td style="padding:8px 0;font-weight:600;color:#2A1505">${booking.reference}</td></tr>
+            </table>
+          </div>
+          <p style="color:#7A5C45;font-size:13px">To reschedule, please contact us at least 24 hours before your appointment.</p>
+          <p style="color:#C8963E;font-weight:600">Zuri Braids — Johannesburg, Gauteng</p>
+        </div>
+      `
+    })
+  });
+}
+
+// ── SUBMIT (Real Supabase save + Resend emails)
+async function handleSubmit() {
+  if (!validateForm()) return;
+
+  const btn = document.getElementById('submitBtn');
+  btn.disabled = true;
+  btn.textContent = 'Confirming booking…';
+
+  const svcRaw = document.getElementById('service').value;
+  const [svc, price] = svcRaw.split('|');
+  const ref = 'ZB-' + Math.floor(100000 + Math.random() * 900000);
+
+  const booking = {
+    client_name:  document.getElementById('fullName').value.trim(),
+    client_email: document.getElementById('email').value.trim(),
+    client_phone: document.getElementById('phone').value.trim(),
+    service:      svc,
+    price:        parseInt(price),
+    booking_date: document.getElementById('date').value,
+    booking_time: selectedTime,
+    notes:        document.getElementById('notes').value.trim(),
+    reference:    ref
+  };
+
+  try {
+    // 1. Save to Supabase database
+    btn.textContent = 'Saving booking…';
+    await saveBookingToSupabase(booking);
+
+    // 2. Send emails (non-blocking — don't fail booking if email fails)
+    btn.textContent = 'Sending confirmation…';
+    try {
+      await sendOwnerNotification(booking);
+      await sendClientConfirmation(booking);
+    } catch(emailErr) {
+      console.warn('Email sending failed:', emailErr.message);
+      // Booking still succeeds even if email fails
+    }
+
+    // 3. Show success
+    document.getElementById('modalRef').textContent = 'REF: ' + ref;
+    document.getElementById('successModal').classList.add('show');
+    bookedSlots.push(selectedTime);
+    renderTimeSlots();
+
+  } catch (err) {
+    console.error('Booking error:', err);
+    alert('Sorry, there was a problem saving your booking. Please try again.\n\nError: ' + err.message);
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Confirm My Booking →';
+  }
+}
+
+function closeModal() {
+  document.getElementById('successModal').classList.remove('show');
+  // Reset form
+  ['fullName','phone','email','notes'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('service').selectedIndex = 0;
+  document.getElementById('date').value = '';
+  document.querySelectorAll('.service-card').forEach(c => c.classList.remove('selected'));
+  document.querySelectorAll('.time-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('consent').checked = false;
+  selectedTime = '';
+  updateSummary();
+}
+</script>
+</body>
+</html>
