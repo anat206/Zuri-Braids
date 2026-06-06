@@ -511,30 +511,33 @@ async function saveBookingToSupabase(booking) {
       'Content-Type': 'application/json',
       'apikey': SUPABASE_KEY,
       'Authorization': `Bearer ${SUPABASE_KEY}`,
-      'Prefer': 'return=representation'
+      'Prefer': 'return=minimal'
     },
     body: JSON.stringify(booking)
   });
   if (!response.ok) {
-    const err = await response.json();
-    throw new Error(err.message || 'Failed to save booking');
+    let errMsg = 'Failed to save booking';
+    try { const err = await response.json(); errMsg = err.message || errMsg; } catch(e) {}
+    throw new Error(errMsg);
   }
-  return await response.json();
+  return true;
 }
 
 async function fetchBookedSlots(date) {
-  const response = await fetch(
-    `${SUPABASE_URL}/rest/v1/bookings?booking_date=eq.${date}&select=booking_time`,
-    {
-      headers: {
-        'apikey': SUPABASE_KEY,
-        'Authorization': `Bearer ${SUPABASE_KEY}`
+  try {
+    const response = await fetch(
+      `${SUPABASE_URL}/rest/v1/bookings?booking_date=eq.${date}&select=booking_time`,
+      {
+        headers: {
+          'apikey': SUPABASE_KEY,
+          'Authorization': `Bearer ${SUPABASE_KEY}`
+        }
       }
-    }
-  );
-  if (!response.ok) return [];
-  const data = await response.json();
-  return data.map(b => b.booking_time);
+    );
+    if (!response.ok) return [];
+    const data = await response.json();
+    return data.map(b => b.booking_time);
+  } catch(e) { return []; }
 }
 
 // ── TIME SLOTS
@@ -781,21 +784,25 @@ async function handleSubmit() {
     btn.textContent = 'Saving booking…';
     await saveBookingToSupabase(booking);
 
-    // 2. Send owner notification email
+    // 2. Send emails (non-blocking — don't fail booking if email fails)
     btn.textContent = 'Sending confirmation…';
-    await sendOwnerNotification(booking);
+    try {
+      await sendOwnerNotification(booking);
+      await sendClientConfirmation(booking);
+    } catch(emailErr) {
+      console.warn('Email sending failed:', emailErr.message);
+      // Booking still succeeds even if email fails
+    }
 
-    // 3. Send client confirmation email
-    await sendClientConfirmation(booking);
-
-    // 4. Show success
+    // 3. Show success
     document.getElementById('modalRef').textContent = 'REF: ' + ref;
     document.getElementById('successModal').classList.add('show');
     bookedSlots.push(selectedTime);
     renderTimeSlots();
 
   } catch (err) {
-    alert('Sorry, there was a problem with your booking. Please try again.\n\nError: ' + err.message);
+    console.error('Booking error:', err);
+    alert('Sorry, there was a problem saving your booking. Please try again.\n\nError: ' + err.message);
   } finally {
     btn.disabled = false;
     btn.textContent = 'Confirm My Booking →';
